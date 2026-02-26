@@ -1,0 +1,126 @@
+.augment-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 2px solid var(--tier-color, #a8a8a8);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.augment-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px color-mix(in srgb, var(--tier-color) 40%, transparent);
+}
+
+.augment-card[data-tier="3"] {
+  animation: prismatic-glow 3s ease-in-out infinite;
+}
+
+@keyframes prismatic-glow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(255, 105, 180, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 105, 180, 0.5);
+  }
+}
+
+.augment-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.augment-icon-container {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid var(--tier-color, #a8a8a8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.augment-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.augment-icon-placeholder {
+  color: var(--tier-color, #a8a8a8);
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.augment-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.augment-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e0e0e0;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.augment-tier {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-top: 4px;
+}
+
+.augment-tier[data-tier="silver"] {
+  background: rgba(168, 168, 168, 0.2);
+  color: #a8a8a8;
+}
+
+.augment-tier[data-tier="gold"] {
+  background: rgba(255, 215, 0, 0.2);
+  color: #ffd700;
+}
+
+.augment-tier[data-tier="prismatic"] {
+  background: linear-gradient(90deg, rgba(255, 105, 180, 0.2), rgba(138, 43, 226, 0.2));
+  color: #ff69b4;
+}
+
+.augment-description {
+  font-size: 0.8rem;
+  color: #a0a0a0;
+  margin: 0;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.augment-traits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.augment-trait {
+  font-size: 0.7rem;
+  color: #c9aa71;
+  background: rgba(201, 170, 113, 0.15);
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(201, 170, 113, 0.3);
+}
