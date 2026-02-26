@@ -15,6 +15,9 @@ dist-ssr
 # Debug/inspection data files (fetched from Community Dragon)
 /data/
 
+# Static TFT data (generated at build time)
+public/tft-data.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

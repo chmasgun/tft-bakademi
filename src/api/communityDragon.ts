@@ -9,12 +9,12 @@ import type {
 } from '../types/tft';
 import { isAugmentBlacklisted } from '../data/augmentBlacklist';
 
-// Community Dragon CDN base URLs
+// Community Dragon CDN base URLs (for images only)
 const CDRAGON_BASE_URL = 'https://raw.communitydragon.org';
 const CDRAGON_LATEST = `${CDRAGON_BASE_URL}/latest`;
 
-// TFT Data endpoints
-const TFT_DATA_URL = `${CDRAGON_LATEST}/cdragon/tft/en_us.json`;
+// Static data URL (bundled at build time)
+const STATIC_DATA_URL = '/tft-data.json';
 
 // Placeholder image for missing icons
 const PLACEHOLDER_ICON = '';
@@ -54,13 +54,13 @@ export const getItemIconUrl = (iconPath: string | null | undefined): string => {
   return `${CDRAGON_LATEST}/game/${normalizedPath}`;
 };
 
-// Fetch all TFT data from Community Dragon
+// Fetch TFT data from static file (bundled at build time)
 export const fetchTFTData = async (): Promise<CDragonTFTData> => {
   try {
-    const response = await axios.get<CDragonTFTData>(TFT_DATA_URL);
+    const response = await axios.get<CDragonTFTData>(STATIC_DATA_URL);
     return response.data;
   } catch (error) {
-    console.error('Error fetching TFT data from Community Dragon:', error);
+    console.error('Error loading TFT data:', error);
     throw error;
   }
 };
