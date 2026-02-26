@@ -16,10 +16,6 @@ const CDRAGON_LATEST = `${CDRAGON_BASE_URL}/latest`;
 // TFT Data endpoints
 const TFT_DATA_URL = `${CDRAGON_LATEST}/cdragon/tft/en_us.json`;
 
-// Official Riot Data Dragon for augments (more accurate/current)
-const DDRAGON_VERSION = '16.4.1';
-const DDRAGON_AUGMENTS_URL = `https://ddragon.leagueoflegends.com/cdn/${DDRAGON_VERSION}/data/en_US/tft-augments.json`;
-
 // Placeholder image for missing icons
 const PLACEHOLDER_ICON = '';
 
@@ -66,68 +62,6 @@ export const fetchTFTData = async (): Promise<CDragonTFTData> => {
   } catch (error) {
     console.error('Error fetching TFT data from Community Dragon:', error);
     throw error;
-  }
-};
-
-// Data Dragon augment response type
-interface DDragonAugment {
-  id: string;
-  name: string;
-  desc?: string;
-  image?: {
-    full: string;
-  };
-}
-
-interface DDragonAugmentsResponse {
-  data: Record<string, DDragonAugment>;
-}
-
-// Fetch augments from official Riot Data Dragon (more accurate)
-export const fetchDDragonAugments = async (): Promise<TFTAugment[]> => {
-  try {
-    const response = await axios.get<DDragonAugmentsResponse>(DDRAGON_AUGMENTS_URL);
-    const augmentsData = response.data.data;
-
-    const augments: TFTAugment[] = Object.entries(augmentsData)
-      // Only include generic (TFT_) and Set 16 specific (TFT16_) augments
-      .filter(([key]) => key.startsWith('TFT_') || key.startsWith('TFT16_'))
-      .map(([key, aug]) => {
-        // Determine tier based on name patterns
-        const name = aug.name;
-        let tier: 1 | 2 | 3 = 1;
-        let tierName: 'Silver' | 'Gold' | 'Prismatic' = 'Silver';
- /*
-        if (name.includes('Crown') || name.endsWith('III') || name.endsWith('++')) {
-          tier = 3;
-          tierName = 'Prismatic';
-        } else if (name.includes('Crest') || name.endsWith(' II') || name.endsWith('+')) {
-          tier = 2;
-          tierName = 'Gold';
-        } else if (name.includes('Circlet') || name.endsWith(' I')) {
-          tier = 1;
-          tierName = 'Silver';
-        }*/
-
-        return {
-          apiName: key,
-          name: aug.name,
-          desc: aug.desc || '',
-          icon: aug.image?.full
-            ? `https://ddragon.leagueoflegends.com/cdn/${DDRAGON_VERSION}/img/tft-augment/${aug.image.full}`
-            : '',
-          tier,
-          tierName,
-          associatedTraits: [],
-          effects: {},
-        };
-      })
-      .sort((a, b) => a.name.localeCompare(b.name));
-
-    return augments;
-  } catch (error) {
-    console.error('Error fetching augments from Data Dragon:', error);
-    return [];
   }
 };
 

@@ -13,7 +13,7 @@ dist-ssr
 *.local
 
 # Debug/inspection data files (fetched from Community Dragon)
-data/
+/data/
 
 # Editor directories and files
 .vscode/*
