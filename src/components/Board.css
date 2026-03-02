@@ -1,0 +1,114 @@
+.board-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  margin: 2rem 0;
+}
+
+.board-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.board-row {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  /* Offset every other row for hex pattern */
+  transform: translateX(-24px);
+}
+
+.board-row:nth-child(2n) {
+  transform: translateX(24px);
+}
+
+.board-hex {
+  width: calc(48px * 2);
+  height: calc(48px * sqrt(3));
+  background: rgba(255, 255, 255, 0.04);
+  border: 2px solid rgba(201, 170, 113, 0.3);
+  /* True hexagon using clip-path */
+  clip-path: polygon(
+    25% 0%,
+    75% 0%,
+    100% 50%,
+    75% 100%,
+    25% 100%,
+    0% 50%
+  );
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  rotate:30deg;
+}
+
+.board-hex.empty:hover {
+  background: rgba(201, 170, 113, 0.2);
+  border-color: rgba(201, 170, 113, 0.6);
+}
+
+.board-hex.occupied {
+  background: rgba(201, 170, 113, 0.15);
+  border-color: rgba(201, 170, 113, 0.5);
+  cursor: pointer;
+}
+
+.board-hex.can-place.empty {
+  border-color: rgba(76, 175, 80, 0.6);
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.board-hex.can-place.empty:hover {
+  background: rgba(76, 175, 80, 0.2);
+  border-color: rgba(76, 175, 80, 0.8);
+}
+
+.hex-champion {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.hex-champion-icon {
+  width: 80%;
+  height: 80%;
+  border-radius: 6px;
+  object-fit: cover;
+  /* Focus the right side of the splash where the champion is usually placed */
+  object-position: 100% center;
+  rotate: -30deg;
+}
+
+.hex-champion-placeholder {
+  width: 80%;
+  height: 80%;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.hex-champion-cost {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #c9aa71;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 4px;
+  border-radius: 3px;
+  line-height: 1;
+}

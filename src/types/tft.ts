@@ -57,10 +57,13 @@ export interface TFTItem {
   icon: string;
   composition: string[];
   effects: Record<string, number>;
+  tags?: string[]; // Raw tags from Community Dragon (used for classification)
   isComponent?: boolean;
   isCompleted?: boolean;
   isRadiant?: boolean;
   isSupport?: boolean;
+  isArtifact?: boolean;
+  isConsumable?: boolean;
 }
 
 export interface TFTAugment {
@@ -94,7 +97,7 @@ export interface CDragonItem {
   apiName: string;
   associatedTraits: string[];
   composition: string[];
-  desc: string;
+  desc: string | null;
   effects: Record<string, number>;
   from: string[] | null;
   icon: string;
@@ -102,6 +105,7 @@ export interface CDragonItem {
   incompatibleTraits: string[];
   name: string;
   unique: boolean;
+  tags?: string[];
 }
 
 export interface CDragonSetData {

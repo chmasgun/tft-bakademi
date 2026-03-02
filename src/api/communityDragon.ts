@@ -9,12 +9,19 @@ import type {
 } from '../types/tft';
 import { isAugmentBlacklisted } from '../data/augmentBlacklist';
 
-// Community Dragon CDN base URLs (for images only)
+// Community Dragon CDN base URLs
 const CDRAGON_BASE_URL = 'https://raw.communitydragon.org';
 const CDRAGON_LATEST = `${CDRAGON_BASE_URL}/latest`;
 
 // Static data URL (bundled at build time)
 const STATIC_DATA_URL = '/tft-data.json';
+
+// In dev: always hit live CDragon for fresh data and easier debugging
+// In prod: use static JSON baked at build time (better perf & reliability)
+const DATA_URL =
+  import.meta.env.DEV
+    ? `${CDRAGON_LATEST}/cdragon/tft/en_us.json`
+    : STATIC_DATA_URL;
 
 // Placeholder image for missing icons
 const PLACEHOLDER_ICON = '';
@@ -54,10 +61,13 @@ export const getItemIconUrl = (iconPath: string | null | undefined): string => {
   return `${CDRAGON_LATEST}/game/${normalizedPath}`;
 };
 
-// Fetch TFT data from static file (bundled at build time)
+// Fetch TFT data
 export const fetchTFTData = async (): Promise<CDragonTFTData> => {
   try {
-    const response = await axios.get<CDragonTFTData>(STATIC_DATA_URL);
+    const response = await axios.get<CDragonTFTData>(DATA_URL, {
+      // Bust cache in dev so changes to data/logic are visible immediately
+      params: import.meta.env.DEV ? { t: Date.now() } : undefined,
+    });
     return response.data;
   } catch (error) {
     console.error('Error loading TFT data:', error);
@@ -140,33 +150,65 @@ export const getLatestSetData = (data: CDragonTFTData): TFTSetData | null => {
       effects: trait.effects,
     }));
 
-  // Filter and categorize items - only include current set items
+  // Filter and categorize items - only include current set, non-debug items
   const items: TFTItem[] = data.items
     .filter((item) => {
       // Filter out non-standard items and augments
       const hasName = item.name && item.name.length > 0;
+      const hasDesc = typeof item.desc === 'string' && item.desc.trim().length > 0;
       const isNotHyperRoll = !item.apiName.includes('_hr');
       const isNotAugment = !item.apiName.includes('Augment');
       const isStandardItem =
         item.apiName.startsWith('TFT_Item') ||
         (item.apiName.startsWith('TFT' + TARGET_SET_NUMBER) && !item.apiName.includes('Augment'));
-      return hasName && isNotHyperRoll && isNotAugment && isStandardItem;
+
+      // Basic debug/system filters
+      const nameLower = (item.name || '').toLowerCase();
+      const isDebugName =
+        nameLower.includes('debug') ||
+        nameLower.includes('test') ||
+        nameLower.includes('tutorial');
+
+      return hasName && hasDesc && isNotHyperRoll && isNotAugment && isStandardItem && !isDebugName;
     })
-    .map((item) => ({
-      apiName: item.apiName,
-      name: item.name,
-      desc: item.desc,
-      icon: item.icon,
-      composition: item.composition || [],
-      effects: item.effects,
-      isComponent:
-        (item.composition || []).length === 0 &&
-        !item.apiName.includes('Radiant') &&
-        item.apiName.startsWith('TFT_Item'),
-      isCompleted: (item.composition || []).length === 2,
-      isRadiant: item.apiName.includes('Radiant'),
-      isSupport: item.apiName.includes('Support'),
-    }));
+    .map((item) => {
+      // Tags are present in raw data but not formally typed; use a safe accessor
+      const tags: string[] = ((item as unknown) as { tags?: string[] }).tags || [];
+
+      // Tag-based classification
+      const isArtifact = tags.includes('{44ace175}');
+      const isConsumable = tags.includes('Consumable');
+      const isComponentTag = tags.includes('component');
+
+      const composition = item.composition || [];
+
+      const isCompleted =
+        composition.length === 2 &&
+        !isArtifact &&
+        !isConsumable;
+
+      const isComponent =
+        composition.length === 0 &&
+        isComponentTag &&
+        !isArtifact &&
+        !isConsumable;
+
+      return {
+        apiName: item.apiName,
+        name: item.name,
+        desc: item.desc || '',
+        icon: item.icon,
+        composition,
+        effects: item.effects,
+        tags,
+        isComponent,
+        isCompleted,
+        isRadiant: item.apiName.includes('Radiant'),
+        isSupport: item.apiName.includes('Support'),
+        isArtifact,
+        isConsumable,
+      };
+    });
 
   // Get active augment IDs from setData.augments (this is the authoritative list!)
   // The augments field contains an array of apiName strings for active augments
@@ -209,7 +251,7 @@ export const getLatestSetData = (data: CDragonTFTData): TFTSetData | null => {
       return {
         apiName: item.apiName,
         name: item.name,
-        desc: item.desc,
+        desc: item.desc || '',
         icon: item.icon,
         tier,
         tierName,
@@ -254,6 +296,11 @@ export const getChampionsByTrait = (
       (trait) => trait.toLowerCase() === traitName.toLowerCase()
     )
   );
+};
+
+// Get artifact items only
+export const getArtifactItems = (items: TFTItem[]): TFTItem[] => {
+  return items.filter((item) => (item as unknown as { isArtifact?: boolean }).isArtifact);
 };
 
 // Get component items only

@@ -5,7 +5,7 @@
   padding: 0.75rem;
   background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
   border-radius: 12px;
-  border: 2px solid var(--cost-color, #808080);
+  border: 6px solid var(--cost-color, #808080);
   cursor: pointer;
   transition: all 0.2s ease;
   min-width: 120px;
@@ -30,6 +30,8 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* Crop more of the left side, focus towards the right where the champion is */
+  object-position: 85% center;
 }
 
 .champion-image-placeholder {

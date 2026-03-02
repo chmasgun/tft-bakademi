@@ -1,17 +1,41 @@
 import { useState } from 'react';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { useTFTData } from './hooks/useTFTData';
 import { ChampionCard, TraitCard, ItemCard, AugmentCard } from './components';
-import { getCompletedItems, getComponentItems } from './api/communityDragon';
+import { getArtifactItems, getCompletedItems, getComponentItems } from './api/communityDragon';
+import { TeamBuilder } from './pages/TeamBuilder';
 import type { TFTChampion, TFTTrait, TFTItem, TFTAugment } from './types/tft';
 import './App.css';
 
 type Tab = 'champions' | 'traits' | 'items' | 'augments';
 
-function App() {
+function DataBrowser() {
   const { data, loading, error } = useTFTData();
   const [activeTab, setActiveTab] = useState<Tab>('champions');
   const [selectedCost, setSelectedCost] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+
+  const toLower = (value: string | null | undefined): string => {
+    try {
+      return (value ?? '').toLowerCase();
+    } catch (err) {
+      console.error('toLower error:', { value, type: typeof value, err });
+      return '';
+    }
+  };
+
+  // Debug: Check for null values in data
+  if (data) {
+    const nullChamps = data.champions.filter(c => !c.name);
+    const nullTraits = data.traits.filter(t => !t.name);
+    const nullItems = data.items.filter(i => !i.name);
+    const nullAugments = data.augments.filter(a => !a.name);
+    
+    if (nullChamps.length > 0) console.error('Champions with null name:', nullChamps);
+    if (nullTraits.length > 0) console.error('Traits with null name:', nullTraits);
+    if (nullItems.length > 0) console.error('Items with null name:', nullItems);
+    if (nullAugments.length > 0) console.error('Augments with null name:', nullAugments);
+  }
 
   if (loading) {
     return (
@@ -49,26 +73,51 @@ function App() {
 
   // Filter champions based on cost and search
   const filteredChampions = data.champions.filter((champ) => {
-    const matchesCost = selectedCost === null || champ.cost === selectedCost;
-    const matchesSearch =
-      searchQuery === '' ||
-      champ.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      champ.traits.some((t) =>
-        t.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    return matchesCost && matchesSearch;
+    try {
+      const matchesCost = selectedCost === null || champ.cost === selectedCost;
+      const matchesSearch =
+        searchQuery === '' ||
+        toLower(champ?.name).includes(toLower(searchQuery)) ||
+        (champ?.traits || []).some((t) => toLower(t).includes(toLower(searchQuery)));
+      return matchesCost && matchesSearch;
+    } catch (err) {
+      console.error('Error filtering champion:', { champ, err });
+      return false;
+    }
   });
 
   // Filter traits based on search
-  const filteredTraits = data.traits.filter(
-    (trait) =>
-      searchQuery === '' ||
-      trait.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredTraits = data.traits.filter((trait) => {
+    try {
+      return (
+        searchQuery === '' ||
+        toLower(trait?.name).includes(toLower(searchQuery))
+      );
+    } catch (err) {
+      console.error('Error filtering trait:', { trait, err });
+      return false;
+    }
+  });
 
-  // Get items
-  const componentItems = getComponentItems(data.items);
-  const completedItems = getCompletedItems(data.items);
+  // Helper for item search
+  const matchesItemSearch = (item: TFTItem) => {
+    try {
+      if (!searchQuery) return true;
+      const q = toLower(searchQuery);
+      return (
+        toLower(item?.name).includes(q) ||
+        toLower(item?.desc).includes(q)
+      );
+    } catch (err) {
+      console.error('Error in matchesItemSearch:', { item, err });
+      return false;
+    }
+  };
+
+  // Grouped & filtered items
+  const artifactItems = getArtifactItems(data.items).filter(matchesItemSearch);
+  const componentItems = getComponentItems(data.items).filter(matchesItemSearch);
+  const completedItems = getCompletedItems(data.items).filter(matchesItemSearch);
 
   const handleChampionClick = (champion: TFTChampion) => {
     console.log('Champion clicked:', champion);
@@ -91,12 +140,18 @@ function App() {
   };
 
   // Filter augments based on search and tier
-  const filteredAugments = data.augments.filter(
-    (augment) =>
-      searchQuery === '' ||
-      augment.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      augment.desc.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredAugments = data.augments.filter((augment) => {
+    try {
+      return (
+        searchQuery === '' ||
+        toLower(augment?.name).includes(toLower(searchQuery)) ||
+        toLower(augment?.desc).includes(toLower(searchQuery))
+      );
+    } catch (err) {
+      console.error('Error filtering augment:', { augment, err });
+      return false;
+    }
+  });
 
   return (
     <div className="app">
@@ -139,6 +194,9 @@ function App() {
           Augments
           <span className="tab-count">{data.augments.length}</span>
         </button>
+        <Link to="/team-builder" className="nav-tab">
+          Team Builder
+        </Link>
       </nav>
 
       <main className="main-content">
@@ -202,10 +260,26 @@ function App() {
 
         {activeTab === 'items' && (
           <div className="items-section">
+            {artifactItems.length > 0 && (
+              <div className="items-category">
+                <h3 className="items-category-title">Artifact Items</h3>
+                <div className="items-grid">
+                  {artifactItems.map((item) => (
+                    <ItemCard
+                      key={item.apiName}
+                      item={item}
+                      onClick={handleItemClick}
+                      size="medium"
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="items-category">
-              <h3 className="items-category-title">Component Items</h3>
+              <h3 className="items-category-title">Completed Items</h3>
               <div className="items-grid">
-                {componentItems.map((item) => (
+                {completedItems.map((item) => (
                   <ItemCard
                     key={item.apiName}
                     item={item}
@@ -217,22 +291,16 @@ function App() {
             </div>
 
             <div className="items-category">
-              <h3 className="items-category-title">Completed Items</h3>
+              <h3 className="items-category-title">Component Items</h3>
               <div className="items-grid">
-                {completedItems
-                  .filter(
-                    (item) =>
-                      searchQuery === '' ||
-                      item.name.toLowerCase().includes(searchQuery.toLowerCase())
-                  )
-                  .map((item) => (
-                    <ItemCard
-                      key={item.apiName}
-                      item={item}
-                      onClick={handleItemClick}
-                      size="medium"
-                    />
-                  ))}
+                {componentItems.map((item) => (
+                  <ItemCard
+                    key={item.apiName}
+                    item={item}
+                    onClick={handleItemClick}
+                    size="medium"
+                  />
+                ))}
               </div>
             </div>
           </div>
@@ -321,6 +389,17 @@ function App() {
         </p>
       </footer>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<DataBrowser />} />
+        <Route path="/team-builder" element={<TeamBuilder />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

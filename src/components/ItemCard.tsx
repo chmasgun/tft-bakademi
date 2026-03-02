@@ -18,11 +18,11 @@ export const ItemCard: React.FC<ItemCardProps> = ({
   const iconUrl = getItemIconUrl(item.icon);
   
   // Parse description - remove HTML tags and variable placeholders
-  const cleanDescription = item.desc
+  const cleanDescription = (item.desc || '')
     .replace(/<[^>]*>/g, '')
     .replace(/@[^@]*@/g, (match) => {
       const varName = match.slice(1, -1).split('*')[0];
-      const value = item.effects[varName];
+      const value = item.effects?.[varName];
       return value !== undefined ? String(value) : match;
     });
 
