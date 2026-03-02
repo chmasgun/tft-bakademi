@@ -125,6 +125,51 @@ export const TeamBuilder: React.FC = () => {
     }
   };
 
+  const handleHexDrop = (row: number, col: number, data: string | null) => {
+    if (!data) return;
+    
+    try {
+      const parsed = JSON.parse(data);
+      const champion = parsed.champion as TFTChampion;
+      const sourceRow = parsed.sourceRow as number | undefined;
+      const sourceCol = parsed.sourceCol as number | undefined;
+      
+      const newBoard = board.map((r) => [...r]);
+      
+      // If this is a move from within the board, clear the source position
+      if (sourceRow !== undefined && sourceCol !== undefined) {
+        // Only clear source if it's different from destination
+        if (sourceRow !== row || sourceCol !== col) {
+          newBoard[sourceRow][sourceCol] = null;
+        }
+      }
+      
+      // Place champion in new position
+      newBoard[row][col] = champion;
+      setBoard(newBoard);
+      setSelectedChampion(null);
+    } catch (error) {
+      console.error('Error parsing drop data:', error);
+    }
+  };
+
+  const [dragOverHex, setDragOverHex] = useState<{ row: number; col: number } | null>(null);
+
+  const handleHexDragOver = (row: number, col: number, e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOverHex({ row, col });
+  };
+
+  const handleHexDragLeave = () => {
+    setDragOverHex(null);
+  };
+
+  const handleChampionDragStart = (champion: TFTChampion, e: React.DragEvent) => {
+    e.dataTransfer.effectAllowed = 'move';
+    // Store champion data without source position (from selector, not board)
+    e.dataTransfer.setData('application/json', JSON.stringify({ champion }));
+  };
+
   const handleChampionSelect = (champion: TFTChampion) => {
     setSelectedChampion(champion);
   };
@@ -174,6 +219,10 @@ export const TeamBuilder: React.FC = () => {
           <Board
             board={board}
             onHexClick={handleHexClick}
+            onHexDrop={handleHexDrop}
+            onHexDragOver={handleHexDragOver}
+            onHexDragLeave={handleHexDragLeave}
+            dragOverHex={dragOverHex}
           />
           
           {/* Active Synergies */}
@@ -298,7 +347,11 @@ export const TeamBuilder: React.FC = () => {
                             } ${onBoard ? 'on-board' : ''}`}
                             onClick={() => handleChampionSelect(champion)}
                           >
-                            <ChampionCard champion={champion} />
+                            <ChampionCard 
+                              champion={champion} 
+                              draggable={true}
+                              onDragStart={handleChampionDragStart}
+                            />
                             {onBoard && <span className="on-board-badge">On Board</span>}
                           </div>
                         );
@@ -330,7 +383,11 @@ export const TeamBuilder: React.FC = () => {
                             } ${onBoard ? 'on-board' : ''}`}
                             onClick={() => handleChampionSelect(champion)}
                           >
-                            <ChampionCard champion={champion} />
+                            <ChampionCard 
+                              champion={champion} 
+                              draggable={true}
+                              onDragStart={handleChampionDragStart}
+                            />
                             {onBoard && <span className="on-board-badge">On Board</span>}
                           </div>
                         );

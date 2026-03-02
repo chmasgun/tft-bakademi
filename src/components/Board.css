@@ -76,6 +76,19 @@
   align-items: center;
   justify-content: center;
   position: relative;
+  cursor: grab;
+  user-select: none;
+}
+
+.hex-champion:active {
+  cursor: grabbing;
+  opacity: 0.7;
+}
+
+.board-hex.drag-over {
+  background: rgba(201, 170, 113, 0.3) !important;
+  border-color: rgba(201, 170, 113, 0.7) !important;
+  transform: scale(1.05);
 }
 
 .hex-champion-icon {
