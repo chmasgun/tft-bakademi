@@ -6,13 +6,6 @@ import { useTFTData } from '../hooks/useTFTData';
 import './Compositions.css';
 
 const TIER_ORDER: CompositionTier[] = ['S', 'A', 'B', 'C', 'X'];
-const TIER_LABELS: Record<CompositionTier, string> = {
-  S: 'S Tier',
-  A: 'A Tier',
-  B: 'B Tier',
-  C: 'C Tier',
-  X: 'Situational',
-};
 
 export const Compositions: React.FC = () => {
   const navigate = useNavigate();
@@ -112,9 +105,6 @@ export const Compositions: React.FC = () => {
     );
   }
 
-  const totalCompositions = compositions.length;
-  const compositionsWithTier = compositions.filter((c) => c.tier).length;
-
   return (
     <div className="compositions-page">
     
@@ -212,7 +202,7 @@ export const Compositions: React.FC = () => {
           </div>
         )}
 
-        {totalCompositions === 0 && (
+        {compositions.length === 0 && (
           <div className="no-compositions">
             <p>No compositions saved yet.</p>
             <button

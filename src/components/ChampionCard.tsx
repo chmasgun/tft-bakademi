@@ -46,7 +46,7 @@ export const ChampionCard: React.FC<ChampionCardProps> = ({
     setTimeout(() => setIsDragging(false), 0);
   };
 
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = () => {
     // Prevent click if we just finished dragging
     if (!isDragging) {
       onClick?.(champion);
