@@ -4,14 +4,15 @@ import { useTFTData } from './hooks/useTFTData';
 import { ChampionCard, TraitCard, ItemCard, AugmentCard } from './components';
 import { getArtifactItems, getCompletedItems, getComponentItems } from './api/communityDragon';
 import { TeamBuilder } from './pages/TeamBuilder';
+import { Compositions } from './pages/Compositions';
 import type { TFTChampion, TFTTrait, TFTItem, TFTAugment } from './types/tft';
 import './App.css';
 
-type Tab = 'champions' | 'traits' | 'items' | 'augments';
+type Tab = 'compositions' | 'champions' | 'traits' | 'items' | 'augments';
 
 function DataBrowser() {
   const { data, loading, error } = useTFTData();
-  const [activeTab, setActiveTab] = useState<Tab>('champions');
+  const [activeTab, setActiveTab] = useState<Tab>('compositions');
   const [selectedCost, setSelectedCost] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -200,15 +201,21 @@ function DataBrowser() {
       </nav>
 
       <main className="main-content">
-        <div className="search-bar">
-          <input
-            type="text"
-            placeholder={`Search ${activeTab}...`}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="search-input"
-          />
-        </div>
+        {activeTab === 'compositions' && (
+          <Compositions />
+        )}
+
+        {activeTab !== 'compositions' && (
+          <div className="search-bar">
+            <input
+              type="text"
+              placeholder={`Search ${activeTab}...`}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="search-input"
+            />
+          </div>
+        )}
 
         {activeTab === 'champions' && (
           <>

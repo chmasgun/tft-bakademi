@@ -12,12 +12,6 @@ dist
 dist-ssr
 *.local
 
-# Debug/inspection data files (fetched from Community Dragon)
-/data/
-
-# Static TFT data (generated at build time)
-public/tft-data.json
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -28,3 +22,15 @@ public/tft-data.json
 *.njsproj
 *.sln
 *.sw?
+
+# Environment variables
+.env
+.env.local
+.env.production
+.env*.local
+server/.env
+
+# Data files
+/data
+/public/tft-data.json
+.vercel

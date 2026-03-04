@@ -25,11 +25,49 @@
   transform: translateX(24px);
 }
 
+.board-hex-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Border hexagon element - parent container */
+.board-hex-border {
+  position: relative;
+  width: calc(48px * 2 + 8px);
+  height: calc(48px * sqrt(3) + 8px);
+  clip-path: polygon(
+    25% 0%,
+    75% 0%,
+    100% 50%,
+    75% 100%,
+    25% 100%,
+    0% 50%
+  );
+  rotate: 30deg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/* Hexagon inside border - centered */
+.board-hex-border > .board-hex {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  rotate: 0deg;
+  pointer-events: auto;
+}
+
 .board-hex {
   width: calc(48px * 2);
   height: calc(48px * sqrt(3));
   background: rgba(255, 255, 255, 0.04);
-  border: 2px solid rgba(201, 170, 113, 0.3);
+  border: none;
   /* True hexagon using clip-path */
   clip-path: polygon(
     25% 0%,
@@ -46,6 +84,33 @@
   justify-content: center;
   transition: all 0.2s ease;
   rotate:30deg;
+  position: relative; /* Ensure it creates a stacking context */
+}
+
+
+/* Cost-based border colors */
+.board-hex-border.cost-1 {
+  background: #808080; /* Gray */
+}
+
+.board-hex-border.cost-2 {
+  background: #11b288; /* Green */
+}
+
+.board-hex-border.cost-3 {
+  background: #207ac7; /* Blue */
+}
+
+.board-hex-border.cost-4 {
+  background: #c440da; /* Purple */
+}
+
+.board-hex-border.cost-5 {
+  background: #ffb93b; /* Gold */
+}
+
+.board-hex-border.cost-11 {
+  background: #ffb93b; /* Gold (for cost 11 champions) */
 }
 
 .board-hex.empty:hover {
@@ -54,7 +119,7 @@
 }
 
 .board-hex.occupied {
-  background: rgba(201, 170, 113, 0.15);
+  background: rgba(0, 0, 0, 1);
   border-color: rgba(201, 170, 113, 0.5);
   cursor: pointer;
 }
@@ -91,9 +156,98 @@
   transform: scale(1.05);
 }
 
+.board-hex.selected {
+  border-color: rgba(76, 175, 80, 0.8) !important;
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+.hex-star-level {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 2px;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  padding: 2px 4px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hex-star-icon {
+  display: block;
+  transition: all 0.2s ease;
+}
+
+/* Star level colors */
+.hex-star-level.star-level-2 .hex-star-icon {
+  color: #c0c0c0; /* Silver */
+  filter: drop-shadow(0 0 2px rgba(192, 192, 192, 0.8));
+}
+
+.hex-star-level.star-level-3 .hex-star-icon {
+  color: #ffd700; /* Gold */
+  filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.9));
+}
+
+.hex-star-level.star-level-4 .hex-star-icon {
+  color: #02f9ff; /* Blueish */
+  filter: drop-shadow(0 0 4px rgba(2, 249, 255, 1));
+}
+
+.hex-delete-btn {
+  position: absolute;
+  top: 2px;
+  right: 20px;
+  width: 24px;
+  height: 24px;
+  background: rgba(220, 53, 69, 0.5);
+  border: 1px solid rgba(250, 253, 255, 1);
+  border-radius: 50%;
+  color: white;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  rotate: -30deg;
+  transition: all 0.2s ease;
+  font-weight: bold;
+}
+
+.hex-delete-btn:hover {
+  background: rgba(220, 53, 69, 1);
+  transform: scale(1.1);
+}
+
+.hex-items {
+  position: absolute;
+  bottom: -8px;
+   
+  display: flex;
+   
+  z-index: 10; 
+  justify-content: center;
+  max-width: 80px;
+}
+
+.hex-item-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 3px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.5);
+  object-fit: cover;
+}
+
 .hex-champion-icon {
-  width: 80%;
-  height: 80%;
+  width: 110%;
+  height: 110%;
   border-radius: 6px;
   object-fit: cover;
   /* Focus the right side of the splash where the champion is usually placed */

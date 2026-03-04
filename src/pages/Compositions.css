@@ -1,0 +1,344 @@
+.compositions-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+  color: #e0e0e0;
+  padding: 2rem;
+}
+
+.compositions-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.compositions-header h2 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  color: #c9aa71;
+  font-weight: bold;
+}
+
+.compositions-count {
+  color: #a0a0a0;
+  font-size: 1rem;
+}
+
+.tiered-count {
+  color: #808080;
+  font-size: 0.9rem;
+}
+
+.compositions-content {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.tier-row {
+  display: flex;
+  align-items: stretch;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.tier-letter-box {
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  flex-shrink: 0;
+  border: 2px solid;
+  font-weight: bold;
+  align-self: stretch;
+}
+
+.tier-letter-box.tier-s {
+  background: rgba(255, 215, 0, 0.15);
+  border-color: rgba(255, 215, 0, 0.6);
+  color: #ffd700;
+}
+
+.tier-letter-box.tier-a {
+  background: rgba(255, 99, 71, 0.15);
+  border-color: rgba(255, 99, 71, 0.6);
+  color: #ff6347;
+}
+
+.tier-letter-box.tier-b {
+  background: rgba(100, 149, 237, 0.15);
+  border-color: rgba(100, 149, 237, 0.6);
+  color: #6495ed;
+}
+
+.tier-letter-box.tier-c {
+  background: rgba(144, 238, 144, 0.15);
+  border-color: rgba(144, 238, 144, 0.6);
+  color: #90ee90;
+}
+
+.tier-letter-box.tier-x {
+  background: rgba(186, 85, 211, 0.15);
+  border-color: rgba(186, 85, 211, 0.6);
+  color: #ba55d3;
+}
+
+.tier-letter-box.tier-none {
+  background: rgba(128, 128, 128, 0.15);
+  border-color: rgba(128, 128, 128, 0.4);
+  color: #808080;
+}
+
+.tier-letter {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.compositions-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  flex: 1;
+  border: 4px solid rgba(201, 170, 113, 0.2);
+  border-radius: 8px;
+  padding: 1rem;
+  min-height: 100px;
+  align-items: center;
+}
+.compositions-row.s {
+  border-color: rgba(255, 215, 0, 0.15);
+}
+.compositions-row.a {
+  border-color: rgba(255, 99, 71, 0.15);
+}
+.compositions-row.b {
+  border-color: rgba(100, 149, 237, 0.15);
+}
+.compositions-row.c {
+  border-color: rgba(144, 238, 144, 0.15);
+}
+.compositions-row.x {
+  border-color: rgba(186, 85, 211, 0.15);
+}
+
+.composition-card {
+  background: rgba(128, 128, 128, 0.3);
+  border: 1px solid rgba(201, 170, 113, 0.2);
+  border-radius: 8px;
+  padding: 0.25rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  width: auto;
+  min-width: auto;
+}
+
+/* Cost-based background colors */
+.composition-card.cost-1 {
+  background: rgba(128, 128, 128, 0.5);
+  border-color: rgba(128, 128, 128, 0.5);
+}
+
+.composition-card.cost-2 {
+  background: rgba(17, 178, 136, 0.5);
+  border-color: rgba(17, 178, 136, 0.5);
+}
+
+.composition-card.cost-3 {
+  background: rgba(32, 122, 199, 0.5);
+  border-color: rgba(32, 122, 199, 0.5);
+}
+
+.composition-card.cost-4 {
+  background: rgba(196, 64, 218, 0.5);
+  border-color: rgba(196, 64, 218, 0.5);
+}
+
+.composition-card.cost-5,
+.composition-card.cost-11 {
+  background: rgba(255, 185, 59, 0.5);
+  border-color: rgba(255, 185, 59, 0.5);
+}
+
+.composition-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  opacity: 0.9;
+}
+
+.composition-card.cost-1:hover {
+  background: rgba(128, 128, 128, 0.5);
+  border-color: rgba(128, 128, 128, 0.7);
+}
+
+.composition-card.cost-2:hover {
+  background: rgba(17, 178, 136, 0.5);
+  border-color: rgba(17, 178, 136, 0.7);
+}
+
+.composition-card.cost-3:hover {
+  background: rgba(32, 122, 199, 0.5);
+  border-color: rgba(32, 122, 199, 0.7);
+}
+
+.composition-card.cost-4:hover {
+  background: rgba(196, 64, 218, 0.5);
+  border-color: rgba(196, 64, 218, 0.7);
+}
+
+.composition-card.cost-5:hover,
+.composition-card.cost-11:hover {
+  background: rgba(255, 185, 59, 0.5);
+  border-color: rgba(255, 185, 59, 0.7);
+}
+
+.composition-images {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.composition-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  object-fit: cover;
+  object-position: 100% center;
+  border: 2px solid rgba(201, 170, 113, 0.3);
+  transition: all 0.2s ease;
+}
+
+.composition-card:hover .composition-image {
+  border-color: rgba(201, 170, 113, 0.6);
+  transform: scale(1.1);
+}
+
+.composition-placeholder {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  background: rgba(201, 170, 113, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #c9aa71;
+  font-weight: bold;
+  font-size: 2rem;
+  border: 2px solid rgba(201, 170, 113, 0.3);
+}
+
+
+
+.no-compositions {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #808080;
+}
+
+.no-compositions p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.create-composition-btn {
+  padding: 1rem 2rem;
+  background: rgba(201, 170, 113, 0.2);
+  border: 2px solid rgba(201, 170, 113, 0.5);
+  border-radius: 8px;
+  color: #c9aa71;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.create-composition-btn:hover {
+  background: rgba(201, 170, 113, 0.3);
+  border-color: rgba(201, 170, 113, 0.7);
+  transform: translateY(-2px);
+}
+
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 1rem;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(201, 170, 113, 0.2);
+  border-top-color: #c9aa71;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error-container button {
+  padding: 0.75rem 1.5rem;
+  background: rgba(220, 53, 69, 0.2);
+  border: 1px solid rgba(220, 53, 69, 0.5);
+  border-radius: 6px;
+  color: #dc3545;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.error-container button:hover {
+  background: rgba(220, 53, 69, 0.3);
+  border-color: rgba(220, 53, 69, 0.7);
+}
+
+@media (max-width: 768px) {
+  .compositions-page {
+    padding: 1rem;
+  }
+
+  .tier-row {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .tier-letter-box {
+    width: 100%;
+    height: 60px;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 1rem;
+  }
+
+  .tier-letter {
+    margin-bottom: 0;
+  }
+
+  .compositions-row {
+    width: 100%;
+  }
+
+  .composition-card {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .composition-images {
+    min-height: 50px;
+  }
+
+  .composition-image {
+    width: 40px;
+    height: 40px;
+  }
+}

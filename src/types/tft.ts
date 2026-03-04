@@ -58,12 +58,19 @@ export interface TFTItem {
   composition: string[];
   effects: Record<string, number>;
   tags?: string[]; // Raw tags from Community Dragon (used for classification)
+  associatedTraits?: string[]; // Traits associated with this item (for emblems)
   isComponent?: boolean;
   isCompleted?: boolean;
   isRadiant?: boolean;
   isSupport?: boolean;
   isArtifact?: boolean;
   isConsumable?: boolean;
+}
+
+export interface BoardChampion {
+  champion: TFTChampion;
+  items: TFTItem[]; // Up to 3 items
+  starLevel: number; // 1, 2, 3, or 4 stars
 }
 
 export interface TFTAugment {

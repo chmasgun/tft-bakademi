@@ -16,11 +16,11 @@ const CDRAGON_LATEST = `${CDRAGON_BASE_URL}/latest`;
 // Static data URL (bundled at build time)
 const STATIC_DATA_URL = '/tft-data.json';
 
-// In dev: always hit live CDragon for fresh data and easier debugging
+// In dev: use proxy through Vite dev server to avoid CORS issues
 // In prod: use static JSON baked at build time (better perf & reliability)
 const DATA_URL =
   import.meta.env.DEV
-    ? `${CDRAGON_LATEST}/cdragon/tft/en_us.json`
+    ? '/api/cdragon/latest/cdragon/tft/en_us.json'
     : STATIC_DATA_URL;
 
 // Placeholder image for missing icons
@@ -201,6 +201,7 @@ export const getLatestSetData = (data: CDragonTFTData): TFTSetData | null => {
         composition,
         effects: item.effects,
         tags,
+        associatedTraits: item.associatedTraits || [],
         isComponent,
         isCompleted,
         isRadiant: item.apiName.includes('Radiant'),
@@ -266,7 +267,7 @@ export const getLatestSetData = (data: CDragonTFTData): TFTSetData | null => {
     });
 
   // Get set name - format it nicely
-  const setName = latestSet.name === 'Set16' ? 'Lore and Legends' : latestSet.name;
+  const setName = latestSet.name === 'Set16' ? 'Lores and Legends' : latestSet.name;
 
   return {
     champions,

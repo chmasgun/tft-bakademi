@@ -1,73 +1,97 @@
-# React + TypeScript + Vite
+# TFT Bakademi
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A Teamfight Tactics guide website with team composition builder.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Champion, Trait, Item, and Augment browsing
+- Interactive team builder with hexagonal board
+- Trait synergy calculation
+- Save and load team compositions
+- MongoDB Atlas integration via Vercel serverless functions
 
-## React Compiler
+## Setup
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 1. Install Dependencies
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. MongoDB Atlas Configuration
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. Create a MongoDB Atlas account at https://www.mongodb.com/cloud/atlas
+2. Create a new cluster
+3. Get your connection string:
+   - Click "Connect" → "Connect your application"
+   - Copy the connection string
+   - Replace `<password>` with your database password
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+3. Add environment variables:
+   - Create `.env.local` file in the root directory:
+   ```env
+   MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/tft-bakademi?retryWrites=true&w=majority
+   MONGODB_DB=tft-bakademi
+   ```
+
+### 3. Development
+
+For local development with API routes, use Vercel CLI:
+
+```bash
+# Install Vercel CLI globally (if not already installed)
+npm i -g vercel
+
+# Run development server with API routes
+vercel dev
 ```
+
+Or use regular Vite dev server (API routes won't work locally, but frontend will):
+
+```bash
+npm run dev
+```
+
+**Note:** For full functionality including saving compositions, use `vercel dev` which will run both the frontend and API routes locally.
+
+### 4. Build
+
+```bash
+npm run build
+```
+
+### 5. Deploy to Vercel
+
+1. Push your code to GitHub
+2. Connect your repository to Vercel
+3. Add environment variables in Vercel dashboard:
+   - `MONGODB_URI`
+   - `MONGODB_DB` (optional, defaults to `tft-bakademi`)
+
+Vercel will automatically detect and deploy your API routes from the `/api` directory.
+
+## Project Structure
+
+```
+├── api/                    # Vercel serverless functions (API routes)
+│   └── compositions/      # Composition CRUD endpoints
+├── src/
+│   ├── api/               # Frontend API client
+│   ├── components/        # React components
+│   ├── pages/             # Page components
+│   └── utils/             # Utility functions
+└── server/                # Legacy Express server (can be removed)
+```
+
+## API Routes
+
+- `GET /api/compositions` - Get all compositions
+- `POST /api/compositions` - Save a new composition
+- `GET /api/compositions/[id]` - Get a single composition
+- `PUT /api/compositions/[id]` - Update a composition
+- `DELETE /api/compositions/[id]` - Delete a composition
+
+## Environment Variables
+
+- `MONGODB_URI` - MongoDB Atlas connection string (required)
+- `MONGODB_DB` - Database name (optional, defaults to `tft-bakademi`)
