@@ -1,3 +1,5 @@
+// @ts-check
+// Runtime: nodejs18.x
 import { MongoClient, ObjectId } from 'mongodb';
 
 const MONGODB_URI = process.env.MONGODB_URI;
